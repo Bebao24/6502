@@ -26,5 +26,5 @@ typedef struct
 } cpu_t;
 
 void CPU_Reset(cpu_t* cpu);
-
+void CPU_Execute(cpu_t* cpu);
 
