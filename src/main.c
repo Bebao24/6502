@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "rom.h"
+#include "cpu.h"
 #include <stdlib.h>
 
 int main(int argc, char** argv)
@@ -10,25 +11,21 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	// Load the ROM
+	// Initialize the CPU
+	cpu_t cpu;
+	// Setup reset vector
+	cpu.memory[0xFFFC] = 0x00;
+	cpu.memory[0xFFFD] = 0x80;
+
+	CPU_Reset(&cpu);
+
+	// Load the ROM into memory 
 	char* path = argv[1];
 	size_t fileSize;
-	// This is only for testing, we will actually load the program into the CPU RAM later
-	uint8_t* buffer = malloc(512);
-	if (!buffer)
-	{
-		return -1;
-	}
+	load_rom(path, &fileSize, &cpu.memory[0x8000]);
 
-	load_rom(path, &fileSize, buffer);
-
-	// Display the ROM content
-	for (size_t i = 0; i < fileSize; i++)
-	{
-		printf("%02X  ", buffer[i]);
-	}
-
-	printf("\n");
+	// Verify that reset vector actually works
+	printf("PC: 0x%x\n", cpu.PC);
 
 	return 0;
 }
