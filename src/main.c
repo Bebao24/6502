@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	size_t fileSize;
 	load_rom(path, &fileSize, &cpu.memory[0x8000]);
 
-	while (true)
+	for (int i = 0; i < 1000; i++)
 	{
 		CPU_Execute(&cpu);
 	}
