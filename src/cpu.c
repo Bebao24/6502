@@ -32,11 +32,33 @@ uint8_t CPU_FetchByte(cpu_t* cpu)
 	return data;
 }
 
+// Instructions opcodes
+#define INS_LDA_IM 0xA9
+
+void CPU_LoadSetFlags(cpu_t* cpu, uint8_t reg)
+{
+	// Set processor status for instructions like lda, ldx, ldy
+	cpu->flags.Z = (reg == 0); // Zero flag
+	cpu->flags.N = (reg & 0b10000000) > 0; // Negative flag
+}
+
 // Execute instructions step by step
 void CPU_Execute(cpu_t* cpu)
 {
 	uint8_t ins = CPU_FetchByte(cpu);
-	printf("Instruction: 0x%02X, PC: 0x%X\n", ins, cpu->PC);
+	switch (ins)
+	{
+		case INS_LDA_IM:
+		{
+			uint8_t value = CPU_FetchByte(cpu);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		default:
+			// Unimplemented instruction or invalid opcode
+			break;
+	}
 }
 
 void CPU_DumpRegisters(cpu_t* cpu)
