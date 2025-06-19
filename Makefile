@@ -14,7 +14,7 @@ emulator: build/emulator
 build/emulator: $(C_OBJECTS)
 	$(CC) -o $@ $^
 
-build/objects/%.o: src/%.c Makefile
+build/objects/%.o: src/%.c Makefile $(C_HEADERS)
 	@ mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c -o $@ $<
 

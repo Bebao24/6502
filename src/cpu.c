@@ -25,19 +25,22 @@ void CPU_Reset(cpu_t* cpu)
 	{
 		cpu->memory[i] = 0;
 	}
+	
+	// CPU reset takes time
+	cpu->cycles = 8;
 }
 
 uint8_t CPU_FetchByte(cpu_t* cpu)
 {
 	uint8_t data = cpu->memory[cpu->PC];
 	cpu->PC++;
+	cpu->cycles++;
 	return data;
 }
 
 // Execute instructions step by step
 void CPU_Execute(cpu_t* cpu)
 {
-	// TODO: Emulate CPU cycles
 	uint8_t ins = CPU_FetchByte(cpu);
 	printf("Instruction: 0x%02X, PC: 0x%X\n", ins, cpu->PC);
 }

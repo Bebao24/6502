@@ -23,6 +23,9 @@ typedef struct
 
 	// Memory
 	uint8_t memory[MEM_SIZE];
+
+	// CPU cycles
+	uint32_t cycles;
 } cpu_t;
 
 void CPU_Reset(cpu_t* cpu);
