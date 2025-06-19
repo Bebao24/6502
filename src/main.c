@@ -19,8 +19,11 @@ int main(int argc, char** argv)
 
 	CPU_Reset(&cpu);
 
-	cpu.memory[0x64] = 0x55;
-	cpu.X = 4;
+	// Setup for testing
+	cpu.memory[0x0014] = 0x00;
+	cpu.memory[0x0015] = 0x30;
+	cpu.memory[0x3000] = 0x42;
+	cpu.Y = 0x04;
 
 	// Load the ROM into memory 
 	char* path = argv[1];

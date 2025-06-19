@@ -65,6 +65,8 @@ uint16_t CPU_ReadWord(cpu_t* cpu, uint16_t address)
 #define INS_LDA_ABS  0xAD
 #define INS_LDA_ABSX 0xBD
 #define INS_LDA_ABSY 0xB9
+#define INS_LDA_INDX 0xA1
+#define INS_LDA_INDY 0xB1
 
 #define INS_JMP_ABS 0x4C
 #define INS_JMP_IND 0x6C
@@ -130,6 +132,28 @@ void CPU_Execute(cpu_t* cpu)
 			uint16_t address = CPU_FetchWord(cpu);
 			address += cpu->Y;
 			uint8_t value = CPU_ReadByte(cpu, address);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_LDA_INDX:
+		{
+			uint8_t address = CPU_FetchByte(cpu);
+			address += cpu->X;
+			uint16_t effectiveAddr = CPU_ReadWord(cpu, address);
+			
+			uint8_t value = CPU_ReadByte(cpu, effectiveAddr);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_LDA_INDY:
+		{
+			uint8_t address = CPU_FetchByte(cpu);
+			address += cpu->Y;
+			uint16_t effectiveAddr = CPU_ReadWord(cpu, address);
+			
+			uint8_t value = CPU_ReadByte(cpu, effectiveAddr);
 			cpu->A = value;
 			CPU_LoadSetFlags(cpu, value);
 			break;
