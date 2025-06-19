@@ -59,7 +59,12 @@ uint16_t CPU_ReadWord(cpu_t* cpu, uint16_t address)
 }
 
 // Instructions opcodes
-#define INS_LDA_IM 0xA9
+#define INS_LDA_IM   0xA9
+#define INS_LDA_ZP   0xA5
+#define INS_LDA_ZPX  0xB5
+#define INS_LDA_ABS  0xAD
+#define INS_LDA_ABSX 0xBD
+#define INS_LDA_ABSY 0xB9
 
 #define INS_JMP_ABS 0x4C
 #define INS_JMP_IND 0x6C
@@ -80,6 +85,51 @@ void CPU_Execute(cpu_t* cpu)
 		case INS_LDA_IM:
 		{
 			uint8_t value = CPU_FetchByte(cpu);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_LDA_ZP:
+		{
+			uint8_t address = CPU_FetchByte(cpu);
+			uint8_t value = CPU_ReadByte(cpu, address);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_LDA_ZPX:
+		{
+			uint8_t BaseAddr = CPU_FetchByte(cpu);
+			uint8_t addr = (BaseAddr + cpu->X) & 0xFF;
+			cpu->cycles++;
+
+			uint8_t value = CPU_ReadByte(cpu, addr);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_LDA_ABS:
+		{
+			uint16_t address = CPU_FetchWord(cpu);
+			uint8_t value = CPU_ReadByte(cpu, address);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_LDA_ABSX:
+		{
+			uint16_t address = CPU_FetchWord(cpu);
+			address += cpu->X;
+			uint8_t value = CPU_ReadByte(cpu, address);
+			cpu->A = value;
+			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_LDA_ABSY:
+		{
+			uint16_t address = CPU_FetchWord(cpu);
+			address += cpu->Y;
+			uint8_t value = CPU_ReadByte(cpu, address);
 			cpu->A = value;
 			CPU_LoadSetFlags(cpu, value);
 			break;

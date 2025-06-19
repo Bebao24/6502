@@ -19,6 +19,9 @@ int main(int argc, char** argv)
 
 	CPU_Reset(&cpu);
 
+	cpu.memory[0x64] = 0x55;
+	cpu.X = 4;
+
 	// Load the ROM into memory 
 	char* path = argv[1];
 	size_t fileSize;
