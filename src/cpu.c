@@ -12,13 +12,7 @@ void CPU_Reset(cpu_t* cpu)
 	cpu->Y = 0;
 
 	// Reset CPU status flags
-	cpu->C = 0;
-	cpu->Z = 0;
-	cpu->I = 0;
-	cpu->D = 0;
-	cpu->B = 0;
-	cpu->V = 0;
-	cpu->N = 0;
+	cpu->PS = 0;
 
 	// Initialize the memory (assumming it's all RAM)
 	for (int i = 0; i < MEM_SIZE; i++)
@@ -45,5 +39,13 @@ void CPU_Execute(cpu_t* cpu)
 	printf("Instruction: 0x%02X, PC: 0x%X\n", ins, cpu->PC);
 }
 
+void CPU_DumpRegisters(cpu_t* cpu)
+{
+	printf("\n----------CPU Registers dump----------\n");
+	printf("A: $%X, X: $%X, Y: $%X\n", cpu->A, cpu->X, cpu->Y);
+	printf("Processor status: $%X\n", cpu->PS);
+	printf("SP: $%X, PC: $%X", cpu->SP, cpu->PC);
+	printf("\n-----------------END------------------\n");
+}
 
 

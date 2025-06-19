@@ -29,5 +29,7 @@ int main(int argc, char** argv)
 		CPU_Execute(&cpu);
 	}
 
+	CPU_DumpRegisters(&cpu);
+
 	return 0;
 }
