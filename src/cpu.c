@@ -32,8 +32,37 @@ uint8_t CPU_FetchByte(cpu_t* cpu)
 	return data;
 }
 
+uint16_t CPU_FetchWord(cpu_t* cpu)
+{
+	uint16_t data = cpu->memory[cpu->PC];
+	cpu->PC++;
+
+	data |= (cpu->memory[cpu->PC] << 8);
+	cpu->PC++;
+
+	cpu->cycles += 2;
+	return data;
+}
+
+uint8_t CPU_ReadByte(cpu_t* cpu, uint16_t address)
+{
+	uint8_t data = cpu->memory[address];
+	cpu->cycles++;
+	return data;
+}
+
+uint16_t CPU_ReadWord(cpu_t* cpu, uint16_t address)
+{
+	uint8_t lowByte = CPU_ReadByte(cpu, address);
+	uint8_t highByte = CPU_ReadByte(cpu, address + 1);
+	return lowByte | (highByte << 8);
+}
+
 // Instructions opcodes
 #define INS_LDA_IM 0xA9
+
+#define INS_JMP_ABS 0x4C
+#define INS_JMP_IND 0x6C
 
 void CPU_LoadSetFlags(cpu_t* cpu, uint8_t reg)
 {
@@ -53,6 +82,19 @@ void CPU_Execute(cpu_t* cpu)
 			uint8_t value = CPU_FetchByte(cpu);
 			cpu->A = value;
 			CPU_LoadSetFlags(cpu, value);
+			break;
+		}
+		case INS_JMP_ABS:
+		{
+			uint16_t address = CPU_FetchWord(cpu);
+			cpu->PC = address;
+			break;
+		}
+		case INS_JMP_IND:
+		{
+			uint16_t address = CPU_FetchByte(cpu);
+			uint16_t jmpAddr = CPU_ReadWord(cpu, address);
+			cpu->PC = jmpAddr;
 			break;
 		}
 		default:
